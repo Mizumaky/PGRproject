@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
 	initShaders();
 	//START THE APPLICATION LOOP
 	glutMainLoopEvent();
-	//AFTER USER EXITS THE WINDOW
+	//AFTER USER EXITS THE APP WINDOW
 	std::cout << "Bye ^^" << std::endl;
 	Sleep(2000);
 	return 0;

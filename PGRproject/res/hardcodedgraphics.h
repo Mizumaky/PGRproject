@@ -1,8 +1,14 @@
 #pragma once
 
 //triangle
-static const float triangle2D[] = {
-   0.0f,  0.5f,
-  -0.5f, -0.5f,
-   0.5f, -0.5f,
+float positions[] = {
+  -0.5f, -0.5f, //0
+   0.5f, -0.5f, //1
+   0.5f,  0.5f, //2
+  -0.7f,  0.5f  //3
+};
+
+unsigned int indices[] = {
+	0, 1, 2,
+	2, 3, 0
 };

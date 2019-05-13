@@ -6,5 +6,5 @@
 
 
 //SHADER LOCATIONS
-#define VERTEX_SHADER_FILE   "src/res/shaders/basic.vert"
-#define FRAGMENT_SHADER_FILE "src/res/shaders/basic.frag"
+#define VERTEX_SHADER_FILE   "res/shaders/basic.vert"
+#define FRAGMENT_SHADER_FILE "res/shaders/basic.frag"

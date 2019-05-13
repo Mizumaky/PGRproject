@@ -146,10 +146,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="old\debug.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="res\hardcodedgraphics.h" />
+    <ClInclude Include="old\debug.h" />
     <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\definitions.h" />
   </ItemGroup>

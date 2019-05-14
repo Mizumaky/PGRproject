@@ -1,9 +1,12 @@
-#include <iostream>;
-#include <string>;
-#include "pgr.h";
-#include "definitions.h";
-#include "Model.h";
-#include "../res/hardcodedgraphics.h";
+#include <iostream>
+#include <string>
+#include "pgr.h"
+#include "definitions.h"
+#include "Model.h"
+#include "../res/hardcodedgraphics.h"
+#include "VertexArray.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 namespace mullemi5 {
 
@@ -14,9 +17,9 @@ namespace mullemi5 {
 	GLint colorUniLoc = 0;
 
 	GLuint shaderProgram = 0;
-	GLuint arrayBuffer = 0; // uint for storing the ID of the array buffer - vertices
-	GLuint indexBuffer = 0; // uint for storing the ID of the index buffer - indexes of vertices, making triangles
-	GLuint vao = 0; // uint for storing the ID of the vertex array object?
+	VertexArray* vao;
+	VertexBuffer* vbo;
+	IndexBuffer* ibo;
 
 	void initApp() {
 		//set default color when clearing view
@@ -34,25 +37,19 @@ namespace mullemi5 {
 		shaderProgram = pgr::createProgram(shaders);
 
 		//prepare an array (object) for multiple buffer x attribpointer settings
-		glGenVertexArrays(1, &vao);
-		glBindVertexArray(vao);
-		GLint positionLoc = glGetAttribLocation(shaderProgram, "position");
+		vao = new VertexArray();
+		//prepare the vertex buffer to set
+		vbo = new VertexBuffer(positions, sizeof(positions));
+		//prepare layout for the buffer and bind it to the buffer using vao
+		auto layout = new VertexBufferLayout();
+		layout->push<float>(2); //our data structure is just positions defined by 2 floats
+		vao->addBuffer(vbo, layout);
 
-		//prepare an array buffer
-		glGenBuffers(1, &arrayBuffer); //generate
-		glBindBuffer(GL_ARRAY_BUFFER, arrayBuffer); //bind - this is the buffer we will be currently setting stuff to 
-		glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW); //prepare the storage for data, also STATIC DRAW indicates to opengl that the data will be written only like once, but read often, and will be used for drawing
-
-		//tell opengl how to read the data from the buffer and enable it as an attribute
-		glEnableVertexAttribArray(positionLoc); //enable the assignment of the specified vertex attribute for the currently bound vertex array object / buffer
-		glVertexAttribPointer(positionLoc, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0); //define how the attribute is stored in there - point to them the right way
-		//             attribute, how much, of what does it take, normalize it?, offset between each vertex (size of each vertex), offset where inside the vertex should we find it
+		//GLint positionLoc = glGetAttribLocation(shaderProgram, "position"); //TODO -- will i need this in the future?
 
 		//prepare an index buffer
-		glGenBuffers(1, &indexBuffer); //generate
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer); //bind
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); //prepare the storage for data
-
+		ibo = new IndexBuffer(indices, 6);
+	
 		//set uniform stuff
 		colorUniLoc = glGetUniformLocation(shaderProgram, "u_Color");
 
@@ -70,8 +67,8 @@ namespace mullemi5 {
 
 		//bind everything in every call
 		glUseProgram(shaderProgram);
-		glBindVertexArray(vao);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+		vao->bind();
+		ibo->bind();
 
 		//set uniforms (needs to be done after shader binding by useprogram)
 		glUniform4f(colorUniLoc, 1.0f, 0.7f, blue, 1.0f);
@@ -89,7 +86,7 @@ namespace mullemi5 {
 
 		glutSwapBuffers();
 	}
-
+	
 	void winResizeCallback(int width, int height) {
 
 	}

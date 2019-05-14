@@ -55,9 +55,9 @@ namespace mullemi5 {
 
 		//Unbind everything at the end 
 		glUseProgram(0);
-		glBindVertexArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		vao->unbind();
+		vbo->unbind();
+		ibo->unbind();
 
 		CHECK_GL_ERROR();
 	}

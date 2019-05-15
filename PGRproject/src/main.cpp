@@ -7,6 +7,7 @@
 #include "VertexArray.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "ShaderProgram.h"
 
 namespace mullemi5 {
 
@@ -14,9 +15,8 @@ namespace mullemi5 {
 
 	float blue = 0.0f;
 	float increment = 0.05f;
-	GLint colorUniLoc = 0;
 
-	GLuint shaderProgram = 0;
+	ShaderProgram* program;
 	VertexArray* vao;
 	VertexBuffer* vbo;
 	IndexBuffer* ibo;
@@ -29,12 +29,8 @@ namespace mullemi5 {
 		//specify the rendering window
 		glViewport(0, 0, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
 
-		GLuint shaders[] = {
-		  pgr::createShaderFromFile(GL_VERTEX_SHADER, VERTEX_SHADER_FILE),
-		  pgr::createShaderFromFile(GL_FRAGMENT_SHADER, FRAGMENT_SHADER_FILE),
-		  0
-		};
-		shaderProgram = pgr::createProgram(shaders);
+		program = new ShaderProgram("res/shaders/basic.vert", "res/shaders/basic.frag", "" );
+		program->bind();
 
 		//prepare an array (object) for multiple buffer x attribpointer settings
 		vao = new VertexArray();
@@ -49,16 +45,14 @@ namespace mullemi5 {
 
 		//prepare an index buffer
 		ibo = new IndexBuffer(indices, 6);
-	
-		//set uniform stuff
-		colorUniLoc = glGetUniformLocation(shaderProgram, "u_Color");
 
-		//Unbind everything at the end 
-		glUseProgram(0);
+		//possibly set one time uniforms
+
+		//Unbind everything at the end (not needed)
+		program->unbind();
 		vao->unbind();
 		vbo->unbind();
 		ibo->unbind();
-
 		CHECK_GL_ERROR();
 	}
 
@@ -66,15 +60,14 @@ namespace mullemi5 {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//bind everything in every call
-		glUseProgram(shaderProgram);
+		program->bind();
 		vao->bind();
 		ibo->bind();
 
-		//set uniforms (needs to be done after shader binding by useprogram)
-		glUniform4f(colorUniLoc, 1.0f, 0.7f, blue, 1.0f);
+		//set uniforms (needs to be done after shader binding by useProgram)
+		program->setUniform4f("u_Color", 1.0f, 0.7f, blue, 1.0f);
 
 		//change color over time
-
 		if (blue > 1.0f || blue < 0.0f)
 			increment = -increment;
 		blue += increment;
@@ -92,7 +85,7 @@ namespace mullemi5 {
 	}
 
 	void finalizeApplication() {
-		pgr::deleteProgramAndShaders(shaderProgram);
+		delete program;
 	}
 }
 

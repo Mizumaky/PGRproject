@@ -3,6 +3,7 @@
 #include "pgr.h"
 
 namespace mullemi5 {
+
 	//one buffer element corresponds to one vertex attribute
 	struct VertexBufferElement {
 		unsigned int type;
@@ -40,4 +41,5 @@ namespace mullemi5 {
 		inline const std::vector<VertexBufferElement>& getElements() const { return m_elements; }
 		inline unsigned int getStride() const { return m_stride; }
 	};
+
 }

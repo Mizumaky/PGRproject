@@ -3,7 +3,7 @@ namespace mullemi5 {
 
 	class VertexBuffer {
 	private:
-		unsigned int m_rendererID; //id of the buffer in our renderer aka opengl
+		unsigned int m_rendererId; //id of the buffer in our renderer aka opengl
 	public:
 		VertexBuffer(const void* data, unsigned int size);
 		~VertexBuffer();

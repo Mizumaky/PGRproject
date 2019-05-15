@@ -147,7 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="old\debug.cpp" />
-    <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\ShaderProgram.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
@@ -157,7 +157,7 @@
   <ItemGroup>
     <ClInclude Include="res\hardcodedgraphics.h" />
     <ClInclude Include="old\debug.h" />
-    <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\ShaderProgram.h" />
     <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\definitions.h" />

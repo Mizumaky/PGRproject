@@ -31,6 +31,10 @@ namespace mullemi5 {
 		CHECK_GL_ERROR();
 	}
 
+	void ShaderProgram::setUniform1i(const std::string& name, int v0) {
+		glUniform1i(getUniformLocation(name), v0);
+		CHECK_GL_ERROR();
+	}
 	void ShaderProgram::setUniform4f(const std::string& name, float v0, float v1, float v2, float v3) {
 		glUniform4f(getUniformLocation(name), v0, v1, v2, v3);
 		CHECK_GL_ERROR();
@@ -43,7 +47,7 @@ namespace mullemi5 {
 		//otherwise retrieve it
 		const int location = glGetUniformLocation(m_rendererId, name.c_str());
 		if (location == -1)
-			std::cout << "OpenGL Warning: uniform" + name + " not found in the shader program" << std::endl;
+			std::cout << "OpenGL Warning: uniform \"" + name + "\" not found in the shader program" << std::endl;
 		else
 			m_uniformLocationCache[name] = location;
 

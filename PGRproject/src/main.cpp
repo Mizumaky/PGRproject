@@ -51,17 +51,9 @@ namespace mullemi5 {
 		shaderProgram = new ShaderProgram("res/shaders/basic.vert", "res/shaders/basic.frag", "");
 		shaderProgram->bind();
 
-		//set projection matrix
-		glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
-		//glm::mat4 projection = glm::ortho(0.0f, (float)glutGet(GLUT_WINDOW_WIDTH), 0.0f, (float)glutGet(GLUT_WINDOW_HEIGHT), -1.0f, 1.0f); //according to our window
-		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-0.4f, 0.0f, 0.0f)); //posun modelu o -0.4 doleva / kamery doprava
-		glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.3f, 0.0f)); //posun modelu o 0.3 nahoru ve svete
-
-		glm::mat4 MVP = projection * view * model;
 
 		//possibly set one-time uniforms (needs to be done after shader)
 		shaderProgram->setUniform4f("u_color", 1.0f, 0.7f, 1.0f, 1.0f);
-		shaderProgram->setUniformMat4f("u_MVP", MVP);
 
 		//prepare textures (needs to be done after shader)
 		texture = new Texture("res/textures/cogwheels.png");
@@ -81,6 +73,22 @@ namespace mullemi5 {
 		//set uniforms (needs to be done after shader binding by useProgram)
 		shaderProgram->bind();
 		shaderProgram->setUniform4f("u_color", 1.0f, 0.7f, blue, 1.0f);
+
+		//set projection matrix
+		glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
+		//glm::mat4 projection = glm::ortho(0.0f, (float)glutGet(GLUT_WINDOW_WIDTH), 0.0f, (float)glutGet(GLUT_WINDOW_HEIGHT), -1.0f, 1.0f); //according to our window
+		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.5f, 0.0f)); //posun kamery o 0.5 dolu (vsech modelu nahoru)
+
+		//draw obejct A
+		glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(-0.6f, 0.0f, 0.0f)); //posun modelu o 0.5 doleva ve svete
+		glm::mat4 MVP = projection * view * model;
+		shaderProgram->setUniformMat4f("u_MVP", MVP);
+		renderer->draw(*vao, *ibo, *shaderProgram);
+
+		//draw object B
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.6f, 0.0f, 0.0f)); //posun modelu o 0.5 doprava ve svete
+		MVP = projection * view * model;
+		shaderProgram->setUniformMat4f("u_MVP", MVP);
 		renderer->draw(*vao, *ibo, *shaderProgram);
 		shaderProgram->unbind();
 

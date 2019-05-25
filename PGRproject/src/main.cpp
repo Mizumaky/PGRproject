@@ -10,6 +10,9 @@
 #include "ShaderProgram.h"
 #include "Renderer.h"
 #include "Texture.h"
+// #include "external/imGui/imgui.h"
+// #include "external/imGui/imgui_impl_glut.h"
+// #include "external/imGui/imgui_impl_opengl3.h"
 
 
 namespace mullemi5 {
@@ -29,23 +32,14 @@ namespace mullemi5 {
 	void initApp() {
 		renderer = new Renderer();
 
-		shaderProgram = new ShaderProgram("res/shaders/basic.vert", "res/shaders/basic.frag", "" );
-		shaderProgram->bind();
-		//possibly set one time uniforms
-		shaderProgram->setUniform4f("u_color", 1.0f, 0.7f, 1.0f, 1.0f);
-
-		//enable blending of alpha channel
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 		//prepare an array (object) for multiple buffer x attribpointer settings
 		vao = new VertexArray();
 		//prepare the vertex buffer to set
 		vbo = new VertexBuffer(vertexes, sizeof(vertexes));
-		//prepare layout for the buffer and bind it to the buffer using vao
+		//prepare layout for the buffer and bind it to the buffer using vao (needs to be done after vao and vbo)
 		auto layout = new VertexBufferLayout();
-		layout->push<float>(2); //our data structure is just positions defined by 2 floats
-		layout->push<float>(2);
+		layout->push<float>(2); //our data structure is positions defined by 2 floats
+		layout->push<float>(2); //and texture coordinates by another 2 floats
 		vao->addBuffer(vbo, layout);
 
 		//GLint positionLoc = glGetAttribLocation(shaderProgram, "position"); //TODO -- will i need this in the future?
@@ -53,7 +47,23 @@ namespace mullemi5 {
 		//prepare an index buffer
 		ibo = new IndexBuffer(indices, 6);
 
-		//prepare textures
+		//load up the shader
+		shaderProgram = new ShaderProgram("res/shaders/basic.vert", "res/shaders/basic.frag", "");
+		shaderProgram->bind();
+
+		//set projection matrix
+		glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
+		//glm::mat4 projection = glm::ortho(0.0f, (float)glutGet(GLUT_WINDOW_WIDTH), 0.0f, (float)glutGet(GLUT_WINDOW_HEIGHT), -1.0f, 1.0f); //according to our window
+		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-0.4f, 0.0f, 0.0f)); //posun modelu o -0.4 doleva / kamery doprava
+		glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.3f, 0.0f)); //posun modelu o 0.3 nahoru ve svete
+
+		glm::mat4 MVP = projection * view * model;
+
+		//possibly set one-time uniforms (needs to be done after shader)
+		shaderProgram->setUniform4f("u_color", 1.0f, 0.7f, 1.0f, 1.0f);
+		shaderProgram->setUniformMat4f("u_MVP", MVP);
+
+		//prepare textures (needs to be done after shader)
 		texture = new Texture("res/textures/cogwheels.png");
 		texture->bind(); //bind a texture to a selected slot (default slot is zero)
 		shaderProgram->setUniform1i("u_texture", 0); //we need to tell the shader at which slot does the texture lie
@@ -71,8 +81,8 @@ namespace mullemi5 {
 		//set uniforms (needs to be done after shader binding by useProgram)
 		shaderProgram->bind();
 		shaderProgram->setUniform4f("u_color", 1.0f, 0.7f, blue, 1.0f);
-
 		renderer->draw(*vao, *ibo, *shaderProgram);
+		shaderProgram->unbind();
 
 		//change color over time
 		if (blue > 1.0f || blue < 0.0f)
@@ -107,11 +117,12 @@ int main(int argc, char** argv) {
 	glutInitContextVersion(pgr::OGL_VER_MAJOR, pgr::OGL_VER_MINOR); //context = instance of opengl, think of it like object in which all states n stuff from opengl are
 	glutInitContextProfile(GLUT_CORE_PROFILE); //to assert newer conventions n stuff - MY OWN ADDED LINE DONT FORGET!
 	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
+	glutInitContextFlags(GLUT_DEBUG); //MY OWN ADDED FOR ALLOWING DEBUG MESSAGES (also needed to change in pgr.h)
 	//GLUT WINDOW INITIALIZATION
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowSize(WIN_WIDTH, WIN_HEIGHT);
 	//glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
-	//glutCloseFunc(finalizeApplication);
+	glutCloseFunc(finalizeApplication);
 	glutCreateWindow(WIN_TITLE);
 
 	//SET DRAW CALLBACK FUNCTION

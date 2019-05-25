@@ -3,20 +3,16 @@
 namespace mullemi5 {
 	VertexArray::VertexArray() {
 		glGenVertexArrays(1, &m_rendererId);
-		CHECK_GL_ERROR();
 	}
 	VertexArray::~VertexArray() {
 		glDeleteVertexArrays(1, &m_rendererId);
-		CHECK_GL_ERROR();
 	}
 
 	void VertexArray::bind() const {
 		glBindVertexArray(m_rendererId);
-		CHECK_GL_ERROR();
 	}
 	void VertexArray::unbind() const {
 		glBindVertexArray(0);
-		CHECK_GL_ERROR();
 	}
 
 	void VertexArray::addBuffer(const VertexBuffer* vbo, const mullemi5::VertexBufferLayout* layout) {
@@ -33,6 +29,5 @@ namespace mullemi5 {
 			//             attribute, how much, of what does it take, normalize it?, offset between each vertex (size of each vertex), offset where inside the vertex should we find it
 			offset += element.count * element.type_size;
 		}
-		CHECK_GL_ERROR();
 	}
 }

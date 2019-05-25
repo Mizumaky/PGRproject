@@ -9,7 +9,6 @@ namespace mullemi5 {
 		m_shadersRendererIds[1] = fs_filepath.empty() ? 0 : pgr::createShaderFromFile(GL_FRAGMENT_SHADER, fs_filepath);
 		m_shadersRendererIds[2] = gs_filepath.empty() ? 0 : pgr::createShaderFromFile(GL_GEOMETRY_SHADER, gs_filepath);
 		m_rendererId = pgr::createProgram(m_shadersRendererIds);
-		CHECK_GL_ERROR();
 	}
 
 	ShaderProgram::~ShaderProgram() {
@@ -18,26 +17,24 @@ namespace mullemi5 {
 				glDeleteShader(shaderId);
 		}
 		glDeleteProgram(m_rendererId);
-		CHECK_GL_ERROR();
 	}
 
 	void ShaderProgram::bind() const {
 		glUseProgram(m_rendererId);
-		CHECK_GL_ERROR();
 	}
 
 	void ShaderProgram::unbind() const {
 		glUseProgram(0);
-		CHECK_GL_ERROR();
 	}
 
 	void ShaderProgram::setUniform1i(const std::string& name, int v0) {
 		glUniform1i(getUniformLocation(name), v0);
-		CHECK_GL_ERROR();
 	}
 	void ShaderProgram::setUniform4f(const std::string& name, float v0, float v1, float v2, float v3) {
 		glUniform4f(getUniformLocation(name), v0, v1, v2, v3);
-		CHECK_GL_ERROR();
+	}
+	void ShaderProgram::setUniformMat4f(const std::string& name, glm::mat4& matrix) {
+		glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
 	}
 
 	int ShaderProgram::getUniformLocation(const std::string& name) {
@@ -51,7 +48,6 @@ namespace mullemi5 {
 		else
 			m_uniformLocationCache[name] = location;
 
-		CHECK_GL_ERROR();
 		return location;
 	}
 

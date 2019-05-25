@@ -26,18 +26,14 @@ Texture::Texture(const std::string& filepath) {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_localBuffer); //u toho rgba - je dobre specifikovat kolik bitu per channel, vezme to i bez te osmicky, ale...
 	//unbind
 	glBindTexture(GL_TEXTURE_2D, 0);
-	CHECK_GL_ERROR();
 }
 Texture::~Texture() {
 	glDeleteTextures(1, &m_rendererId);
-	CHECK_GL_ERROR();
 }
 void Texture::bind(const int slot) const {
 	glActiveTexture(GL_TEXTURE0 + slot); //sets the next bound texture to be bound to this slot
 	glBindTexture(GL_TEXTURE_2D, m_rendererId);
-	CHECK_GL_ERROR();
 }
 void Texture::unbind() {
 	glBindTexture(GL_TEXTURE_2D, 0);
-	CHECK_GL_ERROR();
 }

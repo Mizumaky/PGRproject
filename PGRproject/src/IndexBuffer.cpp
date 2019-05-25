@@ -7,22 +7,19 @@ namespace mullemi5 {
 		glGenBuffers(1, &m_rendererId); //generate
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_rendererId); //bind - this is the buffer we will be currently setting stuff to 
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(GLuint), data, GL_STATIC_DRAW); //prepare the storage for data, also STATIC DRAW indicates to opengl that the data will be written only like once, but read often, and will be used for drawing
-		CHECK_GL_ERROR();
+		m_count = count;
 	}
 
 	IndexBuffer::~IndexBuffer() {
 		glDeleteBuffers(1, &m_rendererId);
-		CHECK_GL_ERROR();
 	}
 
 	void IndexBuffer::bind() const {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_rendererId);
-		CHECK_GL_ERROR();
 	}
 
 	void IndexBuffer::unbind() const {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		CHECK_GL_ERROR();
 	}
 
 }

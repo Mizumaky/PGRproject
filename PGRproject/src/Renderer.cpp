@@ -9,11 +9,14 @@ namespace mullemi5 {
 		glEnable(GL_DEPTH_TEST);
 		//specify the rendering window
 		glViewport(0, 0, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+
+		//enable blending of alpha channel
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	void Renderer::clear() const {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		CHECK_GL_ERROR();
 	}
 
 	
@@ -25,8 +28,7 @@ namespace mullemi5 {
 
 		//draw
 		//glDrawArrays(GL_TRIANGLES, 0, 3); //if we wanna draw arrays directly
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr); //if we wanna draw using indexes
-		CHECK_GL_ERROR();
+		glDrawElements(GL_TRIANGLES, ibo.getCount(), GL_UNSIGNED_INT, nullptr); //if we wanna draw using indexes
 	}
 
 

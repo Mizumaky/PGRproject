@@ -26,16 +26,19 @@ namespace mullemi5 {
 	Renderer* renderer;
 
 	struct GameState {
-		int windowWidth;    // set by reshape callback
-		int windowHeight;   // set by reshape callback
+		int windowWidth = -1;    // set by reshape callback
+		int windowHeight = -1;   // set by reshape callback
 
-		// bool freeCameraMode;        // false;
-		float cameraElevationAngle; // in degrees = initially 0.0f
+		bool camLock = true;
+		float cameraElevationAngle = 0.0f; // in degrees = initially 0.0f
+		float cameraRotationAngle = 0.0f; // in degrees = initially 0.0f
+		float cameraRollAngle = 0.0f; // in degrees = initially 0.0f
 
-		bool gameOver;              // false;
-		bool keyMap[KEYS_COUNT];    // false
+		bool gameOver = false;              // false;
+		bool keyMap[KEYS_COUNT] = {false};    // false
 
-		float elapsedTime;
+		float lastCallTime = 0.0f;
+		float currentTime = 0.0f;
 	} gameState;
 
 	struct ObjectClasses { //TODO probably move to renderer
@@ -47,8 +50,9 @@ namespace mullemi5 {
 	} gameObjectInstances;
 
 
-	void restartGame() {
-		gameState.elapsedTime = 0.001f * (float)glutGet(GLUT_ELAPSED_TIME); // milliseconds => seconds
+	void restartGame() { //TODO TIME????
+		gameState.lastCallTime = 0.001f * (float)glutGet(GLUT_ELAPSED_TIME); // milliseconds => seconds
+		gameState.currentTime = gameState.lastCallTime;
 
 		// if (gameState.freeCameraMode == true) {
 		// 	gameState.freeCameraMode = false;
@@ -158,12 +162,12 @@ namespace mullemi5 {
 
 		// setup camera & projection transform  x       y      z
 		glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 0.0f); //TODO position of player
-		glm::vec3 cameraUpVector = glm::vec3(0.0f, 0.0f, 1.0f);
+		glm::vec3 cameraUpVector = glm::vec3(0.0f, 1.0f, 0.0f);
 		glm::vec3 cameraCenter;
 
 		glm::vec3 cameraViewDirection = glm::vec3(1.0f, 0.0f, 0.0f); //TODO look direction of player
 
-		glm::vec3 rotationAxis = glm::cross(cameraViewDirection, glm::vec3(0.0f, 0.0f, 1.0f));
+		glm::vec3 rotationAxis = glm::cross(cameraViewDirection, glm::vec3(0.0f, 1.0f, 0.0f)); //TODO
 		glm::mat4 cameraTransform = glm::rotate(glm::mat4(1.0f), glm::radians(gameState.cameraElevationAngle), rotationAxis);
 
 		cameraUpVector = glm::vec3(cameraTransform * glm::vec4(cameraUpVector, 0.0f));
@@ -177,11 +181,11 @@ namespace mullemi5 {
 			cameraUpVector
 		);
 
-		glm::mat4 projectionMatrix = glm::perspective(glm::radians(60.0f), (float)gameState.windowWidth / (float)gameState.windowHeight, 0.1f, 10.0f);
+		glm::mat4 projectionMatrix = glm::perspective(glm::radians(CAMERA_FOV), (float)gameState.windowWidth / (float)gameState.windowHeight, 0.1f, 10.0f);
 
 		//TODO common shader / renderer
 		// glUseProgram(shaderProgram.program);
-		// glUniform1f(shaderProgram.timeLocation, gameState.elapsedTime);
+		// glUniform1f(shaderProgram.timeLocation, gameState.currentTime);
 		//
 		// glUniform3fv(shaderProgram.reflectorPositionLocation, 1, glm::value_ptr(gameObjects.spaceShip->position));
 		// glUniform3fv(shaderProgram.reflectorDirectionLocation, 1, glm::value_ptr(gameObjects.spaceShip->direction));
@@ -202,10 +206,51 @@ namespace mullemi5 {
 		glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 	}
 
-	void timerCallback(int) {
-		gameState.elapsedTime = 0.001f * (float)glutGet(GLUT_ELAPSED_TIME); // milliseconds => seconds
+	void passiveMouseMotionCallback(int mouseX, int mouseY) {
+		if (mouseY != gameState.windowHeight / 2) { // if mouse not in the middle
+			float cameraElevationAngleDelta = 0.2f * (mouseY - gameState.windowHeight / 2);
+			if (fabs(gameState.cameraElevationAngle + cameraElevationAngleDelta) < CAMERA_ELEVATION_MAX)
+				gameState.cameraElevationAngle += cameraElevationAngleDelta;
+			// set mouse pointer to the window center
+			glutWarpPointer(gameState.windowWidth / 2, gameState.windowHeight / 2);
 
-		//TODO update objects over time
+			//glutPostRedisplay(); //TODO do i need this?
+		}
+
+	}
+
+	void keyboardCallback(unsigned char keyPressed, int mouseX, int mouseY) {
+
+		switch (keyPressed) {
+			case 27: // escape
+				glutLeaveMainLoop();
+				break;
+			case 'r': // restart game
+				restartGame();
+				break;
+			case 'c': // switch camera
+				gameState.camLock = !gameState.camLock;
+				if (gameState.camLock == true) {
+					glutPassiveMotionFunc(NULL);
+				}
+				else {
+					glutPassiveMotionFunc(passiveMouseMotionCallback);
+					glutWarpPointer(gameState.windowWidth / 2, gameState.windowHeight / 2);
+				}
+				break;
+			default:
+				; // printf("Unrecognized key pressed\n");
+		}
+	}
+
+	void updateGame() { //TODO
+		gameState.currentTime = 0.001f * (float)glutGet(GLUT_ELAPSED_TIME); // milliseconds => seconds
+		float timeDelta = gameState.currentTime - gameState.lastCallTime;
+	}
+
+	void timerCallback(int) {
+		//update objects over time
+		updateGame();
 
 		// set timeCallback next invocation
 		glutTimerFunc(REFRESH_INTERVAL, timerCallback, 0);
@@ -239,10 +284,12 @@ int main(int argc, char** argv) {
 	//GLUT CALLBACK FUNCTIONS ASSIGNING
 	glutDisplayFunc(drawCallback);
 	glutReshapeFunc(winResizeCallback);
-	//glutKeyboardFunc(keyboardCallback);
+	glutKeyboardFunc(keyboardCallback);
 	//glutKeyboardUpFunc(keyboardUpCallback);
 	//glutSpecialFunc(specialKeyboardCallback);     // key pressed
 	//glutSpecialUpFunc(specialKeyboardUpCallback); // key released
+	glutPassiveMotionFunc(passiveMouseMotionCallback); //mouse moved without click
+	glutWarpPointer(gameState.windowWidth / 2, gameState.windowHeight / 2); //move mouse position ^^
 	//glutMouseFunc(mouseCallback);
 	glutCloseFunc(finalizeApplication);
 	glutTimerFunc(REFRESH_INTERVAL, timerCallback, 0);

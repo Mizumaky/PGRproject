@@ -49,7 +49,7 @@ namespace mullemi5 {
 		};
 
 		for (int i = 0; i < 6; i++) {
-			std::string texName = std::string("res/textures/skybox_") + suffixes[i] + ".jpg";
+			std::string texName = std::string("res/textures/skybox_") + suffixes[i] + ".png";
 			std::cout << "Loading cube map texture: " << texName << std::endl;
 			if (!pgr::loadTexImage2D(texName, targets[i])) {
 				pgr::dieWithError("Skybox cube map loading failed!");

@@ -147,6 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="old\debug.cpp" />
+    <ClCompile Include="src\SkyboxRenderer.cpp" />
     <ClCompile Include="src\external\stb_image\stb_image.cpp" />
     <ClCompile Include="src\ShaderProgram.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
@@ -159,12 +160,13 @@
   <ItemGroup>
     <ClInclude Include="res\hardcodedgraphics.h" />
     <ClInclude Include="old\debug.h" />
+    <ClInclude Include="src\SkyboxRenderer.h" />
     <ClInclude Include="src\external\stb_image\stb_image.h" />
     <ClInclude Include="src\ShaderProgram.h" />
     <ClInclude Include="src\IndexBuffer.h" />
-    <ClInclude Include="src\Model.h" />
-    <ClInclude Include="src\definitions.h" />
+    <ClInclude Include="src\settings.h" />
     <ClInclude Include="src\Renderer.h" />
+    <ClInclude Include="src\structs.h" />
     <ClInclude Include="src\VertexBuffer.h" />
     <ClInclude Include="src\VertexArray.h" />
     <ClInclude Include="src\VertexBufferLayout.h" />
@@ -173,9 +175,17 @@
   <ItemGroup>
     <None Include="res\shaders\basic.frag" />
     <None Include="res\shaders\basic.vert" />
+    <None Include="res\shaders\skybox.frag" />
+    <None Include="res\shaders\skybox.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\cogwheels.png" />
+    <Image Include="res\textures\skybox_negx.jpg" />
+    <Image Include="res\textures\skybox_negy.jpg" />
+    <Image Include="res\textures\skybox_negz.jpg" />
+    <Image Include="res\textures\skybox_posx.jpg" />
+    <Image Include="res\textures\skybox_posy.jpg" />
+    <Image Include="res\textures\skybox_posz.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

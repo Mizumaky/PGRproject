@@ -3,6 +3,7 @@
 namespace mullemi5 {
 	VertexArray::VertexArray() {
 		glGenVertexArrays(1, &m_rendererId);
+		//bind(); //pro jistotu... //NOPE, nenechavat
 	}
 	VertexArray::~VertexArray() {
 		glDeleteVertexArrays(1, &m_rendererId);

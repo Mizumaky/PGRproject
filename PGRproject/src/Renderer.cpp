@@ -5,6 +5,8 @@ namespace mullemi5 {
 	Renderer::Renderer() {
 		//set default color when clearing view
 		glClearColor(0.2f, 0.1f, 0.1f, 1.0f);
+		//enable stencil vuffer
+		glClearStencil(0);
 		//enable depth buffer support
 		glEnable(GL_DEPTH_TEST);
 		//specify the rendering window
@@ -16,7 +18,7 @@ namespace mullemi5 {
 	}
 
 	void Renderer::clear() const {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	}
 
 	

@@ -97,22 +97,22 @@
     <Image Include="res\textures\cogwheels.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\textures\skybox_posz.jpg">
+    <Image Include="res\textures\skybox_negx.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\textures\skybox_negx.jpg">
+    <Image Include="res\textures\skybox_negy.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\textures\skybox_negy.jpg">
+    <Image Include="res\textures\skybox_negz.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\textures\skybox_negz.jpg">
+    <Image Include="res\textures\skybox_posx.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\textures\skybox_posx.jpg">
+    <Image Include="res\textures\skybox_posy.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\textures\skybox_posy.jpg">
+    <Image Include="res\textures\skybox_posz.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

@@ -180,12 +180,12 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\cogwheels.png" />
-    <Image Include="res\textures\skybox_negx.jpg" />
-    <Image Include="res\textures\skybox_negy.jpg" />
-    <Image Include="res\textures\skybox_negz.jpg" />
-    <Image Include="res\textures\skybox_posx.jpg" />
-    <Image Include="res\textures\skybox_posy.jpg" />
-    <Image Include="res\textures\skybox_posz.jpg" />
+    <Image Include="res\textures\skybox_negx.png" />
+    <Image Include="res\textures\skybox_negy.png" />
+    <Image Include="res\textures\skybox_negz.png" />
+    <Image Include="res\textures\skybox_posx.png" />
+    <Image Include="res\textures\skybox_posy.png" />
+    <Image Include="res\textures\skybox_posz.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

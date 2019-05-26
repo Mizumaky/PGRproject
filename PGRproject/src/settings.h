@@ -5,7 +5,8 @@
 #define WIN_TITLE   "PGRproject"
 #define REFRESH_INTERVAL 16
 
-#define CAMERA_ELEVATION_MAX 90.0f
+#define CAMERA_ELEVATION_MAX 59.0f
+#define CAMERA_ROTATION_MAX 59.0f
 #define CAMERA_FOV 50.0f
 
 //key definitions

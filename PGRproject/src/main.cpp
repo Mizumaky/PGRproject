@@ -30,9 +30,9 @@ namespace mullemi5 {
 		int windowHeight = -1;   // set by reshape callback
 
 		bool camLock = true;
-		float cameraElevationAngle = 0.0f; // in degrees = initially 0.0f
-		float cameraRotationAngle = 0.0f; // in degrees = initially 0.0f
-		float cameraRollAngle = 0.0f; // in degrees = initially 0.0f
+		float camPitchAngle = 0.0f; // in degrees = initially 0.0f
+		float camYawAngle = 0.0f; // in degrees = initially 0.0f
+		float camRollAngle = 0.0f; // in degrees = initially 0.0f
 
 		bool gameOver = false;              // false;
 		bool keyMap[KEYS_COUNT] = {false};    // false
@@ -58,7 +58,9 @@ namespace mullemi5 {
 		// 	gameState.freeCameraMode = false;
 		// 	glutPassiveMotionFunc(NULL);
 		// }
-		gameState.cameraElevationAngle = 0.0f;
+		gameState.camPitchAngle = 0.0f;
+		gameState.camYawAngle = 0.0f;
+		gameState.camRollAngle = 0.0f;
 
 		// reset key map
 		for (int i = 0; i < KEYS_COUNT; i++)
@@ -74,7 +76,7 @@ namespace mullemi5 {
 		glClearStencil(0);
 		//enable depth buffer support
 		glEnable(GL_DEPTH_TEST);
-		//renderer = new Renderer(); //TODO move here
+		//renderer = new Renderer(); //TODO move stuff above to here
 		
 		// //prepare an array (object) for multiple buffer x attribpointer settings
 		// vao = new VertexArray();
@@ -160,21 +162,27 @@ namespace mullemi5 {
 		// 	glm::vec3(0.0f, 1.0f, 0.0f)
 		// );
 
-		// setup camera & projection transform  x       y      z
+		// SETUP CAMERA & PROJECTION TRANSFORM  x       y      z
 		glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 0.0f); //TODO position of player
 		glm::vec3 cameraUpVector = glm::vec3(0.0f, 1.0f, 0.0f);
 		glm::vec3 cameraCenter;
-
 		glm::vec3 cameraViewDirection = glm::vec3(1.0f, 0.0f, 0.0f); //TODO look direction of player
 
-		glm::vec3 rotationAxis = glm::cross(cameraViewDirection, glm::vec3(0.0f, 1.0f, 0.0f)); //TODO
-		glm::mat4 cameraTransform = glm::rotate(glm::mat4(1.0f), glm::radians(gameState.cameraElevationAngle), rotationAxis);
+		//CALCULATE ROTATION MATRIX
+		glm::mat4 cameraTransform = glm::mat4(1.0f); //init diagonal matrix of ones
+		//rotate matrix up / down
+		glm::vec3 pitchAxis = glm::cross(cameraViewDirection, glm::vec3(0.0f, 1.0f, 0.0f)); //cross product of player direction and worlds up direction
+		cameraTransform = glm::rotate(cameraTransform, glm::radians(gameState.camPitchAngle), pitchAxis);
+		//rotate matrix left / right along y
+		glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f);
+		cameraTransform = glm::rotate(cameraTransform, glm::radians(gameState.camYawAngle), rotationAxis);
 
+		//MULTIPLY UP VECTOR AND VIEW DIRECTION BY THE MATRIX, and g
 		cameraUpVector = glm::vec3(cameraTransform * glm::vec4(cameraUpVector, 0.0f));
 		cameraViewDirection = glm::vec3(cameraTransform * glm::vec4(cameraViewDirection, 0.0f));
-
 		cameraCenter = cameraPosition + cameraViewDirection;
 
+		//CALCULATE VIEW MATRIX BASED ON PREVIOUS RESULTS
 		glm::mat4 viewMatrix = glm::lookAt(
 			cameraPosition,
 			cameraCenter,
@@ -207,16 +215,18 @@ namespace mullemi5 {
 	}
 
 	void passiveMouseMotionCallback(int mouseX, int mouseY) {
-		if (mouseY != gameState.windowHeight / 2) { // if mouse not in the middle
-			float cameraElevationAngleDelta = 0.2f * (mouseY - gameState.windowHeight / 2);
-			if (fabs(gameState.cameraElevationAngle + cameraElevationAngleDelta) < CAMERA_ELEVATION_MAX)
-				gameState.cameraElevationAngle += cameraElevationAngleDelta;
-			// set mouse pointer to the window center
-			glutWarpPointer(gameState.windowWidth / 2, gameState.windowHeight / 2);
-
-			//glutPostRedisplay(); //TODO do i need this?
+		if (mouseX != gameState.windowWidth / 2) { // if mouse not in the middle
+			float camYawAngleDelta = 0.2f * (gameState.windowWidth / 2 - mouseX);
+			if (fabs(gameState.camYawAngle + camYawAngleDelta) < CAMERA_ROTATION_MAX)
+				gameState.camYawAngle += camYawAngleDelta;
 		}
-
+		if (mouseY != gameState.windowHeight / 2) { // if mouse not in the middle
+			float camPitchAngleDelta = 0.2f * (gameState.windowHeight / 2 - mouseY);
+			if (fabs(gameState.camPitchAngle + camPitchAngleDelta) < CAMERA_ELEVATION_MAX)
+				gameState.camPitchAngle += camPitchAngleDelta;
+		}
+		// set mouse pointer to the window center
+		glutWarpPointer(gameState.windowWidth / 2, gameState.windowHeight / 2);
 	}
 
 	void keyboardCallback(unsigned char keyPressed, int mouseX, int mouseY) {

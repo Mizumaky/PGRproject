@@ -11,11 +11,6 @@
 #include "Texture.h"
 #include "SkyboxRenderer.h"
 
-// #include "external/imGui/imgui.h"
-// #include "external/imGui/imgui_impl_glut.h"
-// #include "external/imGui/imgui_impl_opengl3.h"
-
-
 namespace mullemi5 {
 
 	//Model model;

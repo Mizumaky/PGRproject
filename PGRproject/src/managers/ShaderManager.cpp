@@ -7,7 +7,7 @@
 
 using namespace managers;
 
-std::map<std::string, GLuint> ShaderManager::s_programs; //yes i need this
+std::map<std::string, GLuint> ShaderManager::s_programs; //yes i need this here
 
 ShaderManager::ShaderManager() = default;
 

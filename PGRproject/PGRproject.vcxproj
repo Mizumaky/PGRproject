@@ -148,9 +148,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\rendering\GameModels.cpp" />
+    <ClCompile Include="src\core\FreeGlutHandler.cpp" />
+    <ClCompile Include="src\core\GlewHandler.cpp" />
+    <ClCompile Include="src\managers\ModelsManager.cpp" />
+    <ClCompile Include="src\managers\SceneManager.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\managers\ShaderManager.cpp" />
+    <ClCompile Include="src\rendering\models\Model.cpp" />
+    <ClCompile Include="src\rendering\models\Square.cpp" />
+    <ClCompile Include="src\rendering\models\Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\cogwheels.png" />
@@ -162,8 +168,19 @@
     <Image Include="res\textures\skybox_posz.png" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\rendering\GameModels.h" />
+    <ClInclude Include="src\core\ContextInfo.h" />
+    <ClInclude Include="src\core\FrameBufferInfo.h" />
+    <ClInclude Include="src\core\FreeGlutHandler.h" />
+    <ClInclude Include="src\core\GlewHandler.h" />
+    <ClInclude Include="src\core\IListener.h" />
+    <ClInclude Include="src\core\WindowInfo.h" />
+    <ClInclude Include="src\managers\ModelsManager.h" />
+    <ClInclude Include="src\managers\SceneManager.h" />
     <ClInclude Include="src\managers\ShaderManager.h" />
+    <ClInclude Include="src\rendering\IGameObject.h" />
+    <ClInclude Include="src\rendering\models\Model.h" />
+    <ClInclude Include="src\rendering\models\Square.h" />
+    <ClInclude Include="src\rendering\models\Triangle.h" />
     <ClInclude Include="src\rendering\VertexFormat.h" />
   </ItemGroup>
   <ItemGroup>

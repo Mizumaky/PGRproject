@@ -1,0 +1,21 @@
+#pragma once
+namespace core {
+
+	class IListener {
+	public:
+		virtual ~IListener() = 0;
+
+		//drawing functions
+		virtual void notifyBeginFrame() = 0;
+		virtual void notifyDisplayFrame() = 0;
+		virtual void notifyEndFrame() = 0;
+		virtual void notifyReshape(
+			int width, int height,
+			int previous_width, int previous_height
+		) = 0;
+	};
+
+	inline IListener::~IListener() {
+		//pure virtual destructor -> makes it abstract
+	}
+}
